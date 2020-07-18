@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\FizzBuzz\FizzBuzz;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,9 +12,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FizzbuzzCommand extends Command
 {
-    public function __construct()
+    private FizzBuzz $fizzBuzz;
+
+    public function __construct(FizzBuzz $fizzBuzz)
     {
         parent::__construct('app:fizzbuzz');
+        $this->fizzBuzz = $fizzBuzz;
     }
 
     protected function configure()
@@ -27,17 +31,11 @@ class FizzbuzzCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $iterations = $input->getArgument('iterations');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        foreach(range(1, $iterations) as $iteration) {
+            $io->write($this->fizzBuzz->find($iteration));
         }
-
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 
         return 0;
     }
